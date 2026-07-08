@@ -1,0 +1,41 @@
+[
+  {
+    "table_schema": "TABLE audit_logs (\n    id INT PRIMARY KEY AUTO_INCREMENT,\n    actor_id INT,\n    action VARCHAR(100) NOT NULL,\n    entity_type VARCHAR(50) NOT NULL,\n    entity_id INT NOT NULL,\n    before_data JSON,\n    after_data JSON,\n    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n);"
+  },
+  {
+    "table_schema": "TABLE depart_evaluations (\n    id INT PRIMARY KEY AUTO_INCREMENT,\n    evaluator_id INT,\n    period_id INT,\n    submitted_at TIMESTAMPTZ,\n    divisions_id INT\n);"
+  },
+  {
+    "table_schema": "TABLE depart_kpis (\n    id INT PRIMARY KEY AUTO_INCREMENT,\n    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    indicator_name TEXT,\n    definition TEXT,\n    explanation TEXT,\n    weight INT,\n    max_score INT\n);"
+  },
+  {
+    "table_schema": "TABLE depart_scores (\n    id INT PRIMARY KEY AUTO_INCREMENT,\n    depart_evaluation_id INT,\n    depart_kpi_id INT,\n    score INT,\n    notes TEXT,\n    created_at TIMESTAMPTZ\n);"
+  },
+  {
+    "table_schema": "TABLE divisions (\n    id INT PRIMARY KEY AUTO_INCREMENT,\n    name VARCHAR(100) NOT NULL UNIQUE\n);"
+  },
+  {
+    "table_schema": "TABLE evaluation_periods (\n    id INT PRIMARY KEY AUTO_INCREMENT,\n    name VARCHAR(100) NOT NULL,\n    quartal INT NOT NULL,\n    is_active BOOLEAN DEFAULT true,\n    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n);"
+  },
+  {
+    "table_schema": "TABLE evaluation_policies (\n    id INT PRIMARY KEY AUTO_INCREMENT,\n    evaluator_role_id INT NOT NULL,\n    evaluatee_role_id INT NOT NULL,\n    division_scope VARCHAR(30) NOT NULL,\n    priority INT DEFAULT 1,\n    is_active BOOLEAN DEFAULT true,\n    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n);"
+  },
+  {
+    "table_schema": "TABLE evaluation_scores (\n    id INT PRIMARY KEY AUTO_INCREMENT,\n    evaluation_id INT NOT NULL,\n    kpi_id INT NOT NULL,\n    score INT NOT NULL,\n    notes TEXT,\n    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n);"
+  },
+  {
+    "table_schema": "TABLE evaluations (\n    id INT PRIMARY KEY AUTO_INCREMENT,\n    evaluator_id INT NOT NULL,\n    evaluatee_id INT NOT NULL,\n    period_id INT,\n    submitted_at TIMESTAMP,\n    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n);"
+  },
+  {
+    "table_schema": "TABLE kpis (\n    id INT PRIMARY KEY AUTO_INCREMENT,\n    indicator_name VARCHAR(150) NOT NULL,\n    definition TEXT NOT NULL,\n    type KPI_TYPE NOT NULL,\n    division_id INT,\n    weight INT DEFAULT 1,\n    max_score INT DEFAULT 6,\n    version INT DEFAULT 1,\n    is_active BOOLEAN DEFAULT true,\n    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n    explanation TEXT\n);"
+  },
+  {
+    "table_schema": "TABLE members (\n    id INT PRIMARY KEY AUTO_INCREMENT,\n    name VARCHAR(100) NOT NULL,\n    email VARCHAR(150) NOT NULL UNIQUE,\n    password VARCHAR(255) NOT NULL,\n    division_id INT,\n    sub_division_id INT,\n    remember_token VARCHAR(100),\n    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n    role_id INT\n);"
+  },
+  {
+    "table_schema": "TABLE roles (\n    id INT PRIMARY KEY AUTO_INCREMENT,\n    name VARCHAR(50) NOT NULL UNIQUE\n);"
+  },
+  {
+    "table_schema": "TABLE sub_divisions (\n    id INT PRIMARY KEY AUTO_INCREMENT,\n    name VARCHAR(100) NOT NULL,\n    division_id INT NOT NULL\n);"
+  }
+]
