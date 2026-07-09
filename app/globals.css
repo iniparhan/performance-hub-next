@@ -60,7 +60,7 @@ button:disabled {
   inset: 0;
   background-image:
     linear-gradient(rgba(3, 27, 62, 0.55), rgba(12, 50, 106, 0.65)),
-    url("/background_login.png");
+    url("/image.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
