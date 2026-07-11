@@ -1,13 +1,14 @@
+// app/dashboard/page.jsx
+
 "use client";
 
-import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import AppraisalModal from "../../components/AppraisalModal";
 import DepartmentTrackerModal from "../../components/DepartmentTrackerModal";
 import Dashboard from "../../components/Dashboard";
 import QuickActions from "../../components/QuickActions";
 import Toast from "../../components/Toast";
-import { getCurrentUser, logout } from "../../services/clientAuthService";
+import { getCurrentUser } from "../../services/clientAuthService";
 import {
   getCompletionStatus,
   getDashboardSummary,
@@ -363,17 +364,6 @@ export default function PerformanceHubPage() {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-
-      // Redirect setelah logout
-      window.location.href = "/login";
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
-  };
-
   const user = appState.currentUser;
   const activeQuartal = appState.activeQuartal?.quartal || null;
   const summary = appState.dashboardSummary || {};
@@ -398,22 +388,7 @@ export default function PerformanceHubPage() {
 
   return (
     <>
-      <header className="topbar">
-        <Image
-          className="topbar-logo"
-          src="/sxc_logo_biru.png"
-          alt="SXC Logo"
-          width={130}
-          height={50}
-          style={{ width: "auto", height: "50px" }}
-          priority
-        />
-
-        <button className="logout-button" type="button" onClick={handleLogout}>
-          <span className="logout-icon">➜]</span>
-        </button>
-      </header>
-
+      {/* Topbar dan validasi session dipindahkan ke app/dashboard/layout.jsx. */}
       <main className="page">
         <section className="hero">
           <p className="eyebrow">Performance Hub</p>

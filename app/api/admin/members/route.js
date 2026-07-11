@@ -1,57 +1,38 @@
 import { NextResponse } from "next/server";
+import { authorizeAdmin } from "@/services/authService";
 import { prisma } from "@/lib/prisma";
-import { getSession } from "@/lib/session";
 
 /**
  * GET /api/admin/members
  * Get all members with their roles and divisions
  */
-export async function GET() {
-  try {
-    const session = await getSession();
+// app/api/admin/members/route.js
 
-    if (!session) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
+export async function GET(request) {
+  const authorization = await authorizeAdmin(request);
 
-    // Check if user is admin (role_id: 1=Super Admin, 2=Admin)
-    if (!session.role_id || session.role_id > 2) {
-      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
-    }
-
-    const members = await prisma.member.findMany({
-      include: {
-        role: true,
-        division: true,
-        subDivision: true,
-      },
-      orderBy: {
-        name: "asc",
-      },
-    });
-
-    const formatted = members.map((member) => ({
-      id: member.id,
-      name: member.name,
-      email: member.email,
-
-      role_id: member.roleId,
-      role_name: member.role?.name || null,
-
-      division_id: member.divisionId,
-      division_name: member.division?.name || null,
-
-      sub_division_id: member.subDivisionId,
-      sub_division_name: member.subDivision?.name || null,
-    }));
-
-    return NextResponse.json(formatted);
-  } catch (error) {
-    console.error("Error fetching members:", error);
-
+  if (!authorization.ok) {
     return NextResponse.json(
-      { message: "Internal server error" },
-      { status: 500 },
+      {
+        message: authorization.message,
+      },
+      {
+        status: authorization.status,
+      },
     );
   }
+
+  // User pada titik ini sudah dipastikan sebagai admin.
+  const members = await prisma.member.findMany({
+    select: {
+      id: true,
+      name: true,
+      email: true,
+    },
+  });
+
+  return NextResponse.json({
+    message: "Success",
+    data: members,
+  });
 }

@@ -15,13 +15,18 @@ export default function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setError("");
     setIsLoading(true);
 
     try {
-      await login({ email, password });
+      const result = await login({
+        email: email.trim(),
+        password,
+      });
 
-      router.push("/dashboard");
+      // Redirect mengikuti hasil validasi role dari server.
+      router.replace(result.redirectTo || "/dashboard");
       router.refresh();
     } catch (err) {
       setError(err?.message || "Login failed. Please check your credentials.");

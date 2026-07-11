@@ -38,9 +38,6 @@ export default function AppraisalModal({
                       {target.targetRole} • {target.targetDepartment} •{" "}
                       {target.targetSubDepartment}
                     </p>
-                    <p>
-                      {target.relationship} • {target.divisionScope}
-                    </p>
                   </div>
 
                   <button

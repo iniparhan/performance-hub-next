@@ -1,10 +1,25 @@
+import "server-only";
+
 import crypto from "crypto";
+import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 
 export const SESSION_COOKIE_NAME = "token";
 export const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24;
 
 const TOKEN_VERSION = "v1";
+const ADMIN_ROLE_NAME = "Admin";
+const ADMIN_ROLE_IDS = new Set([1, 2]);
+
+export function isAdminUser(user) {
+  const roleName = user?.role_name ?? user?.role?.name ?? "";
+  const roleId = Number(user?.role_id ?? user?.roleId);
+
+  return (
+    ADMIN_ROLE_IDS.has(roleId) ||
+    roleName.trim().toLowerCase() === ADMIN_ROLE_NAME.toLowerCase()
+  );
+}
 
 function getSecret() {
   return (
@@ -42,6 +57,35 @@ function createSessionToken(userId) {
   const expiresAt = Date.now() + SESSION_MAX_AGE_SECONDS * 1000;
   const payload = `${TOKEN_VERSION}.${userId}.${expiresAt}`;
   return `${payload}.${sign(payload)}`;
+}
+
+export async function authorizeAdmin(request) {
+  const user = await getCurrentUser(request);
+
+  if (!user) {
+    return {
+      ok: false,
+      status: 401,
+      message: "Authentication required",
+      user: null,
+    };
+  }
+
+  if (!isAdminUser(user)) {
+    return {
+      ok: false,
+      status: 403,
+      message: "Admin access required",
+      user: null,
+    };
+  }
+
+  return {
+    ok: true,
+    status: 200,
+    message: "Authorized",
+    user,
+  };
 }
 
 export function getSessionCookieOptions() {
@@ -99,8 +143,14 @@ export async function verifySession(token) {
   return { userId, expiresAt };
 }
 
-export async function getCurrentUser(request) {
-  const token = request?.cookies?.get(SESSION_COOKIE_NAME)?.value;
+export async function getCurrentUserFromServerCookies() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
+
+  return findCurrentUserByToken(token);
+}
+
+async function findCurrentUserByToken(token) {
   const session = await verifySession(token);
 
   if (!session) return null;
@@ -135,6 +185,11 @@ export async function getCurrentUser(request) {
   return toSafeUser(user);
 }
 
+export async function getCurrentUser(request) {
+  const token = request?.cookies?.get(SESSION_COOKIE_NAME)?.value;
+  return findCurrentUserByToken(token);
+}
+
 export async function login({ email, password }) {
   if (!email || !password) {
     return {
@@ -144,8 +199,13 @@ export async function login({ email, password }) {
     };
   }
 
-  const user = await prisma.member.findUnique({
-    where: { email },
+  const user = await prisma.member.findFirst({
+    where: {
+      email: {
+        equals: email.trim(),
+        mode: "insensitive",
+      },
+    },
     select: {
       id: true,
       name: true,
@@ -157,6 +217,9 @@ export async function login({ email, password }) {
       role: {
         select: {
           name: true,
+
+          // TODO ROLE CONFIGURATION:
+          // Tambahkan `code: true` apabila tabel role memiliki kolom code/slug.
         },
       },
       division: {
@@ -180,11 +243,15 @@ export async function login({ email, password }) {
     };
   }
 
+  const safeUser = toSafeUser(user);
+
   return {
     ok: true,
     token: createSessionToken(user.id),
-    user: toSafeUser(user),
-    redirectTo: "/dashboard",
+    user: safeUser,
+
+    // Redirect ditentukan oleh server berdasarkan role dari database.
+    redirectTo: isAdminUser(user) ? "/admin_dashboard" : "/dashboard",
   };
 }
 
