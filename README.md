@@ -1,17 +1,8 @@
-# What's Next?
+# Performance Hub
 
-- Modifikasi flownya, biar kalo bagian dashboard menyesuaikan period atau quartal yang terbuka, tapi khusus untuk pertanyaannya, jika di cek di evaluation_periods.is_active == TRUE maka pertanyaan akan baru, tetapi ini tidak berlaku untuk bagian "Personal Performance Overview", "Qualitative Feedback"
-- buat code supaya ketika setelah input nilai pada tiap officer, disimpan dulu di local atau cache, baru kalau sudah semua, langsung di PUT atau di push ke database bersamaan
+A Next.js based fullstack web application created by Talent Analytics, designed to centralize officer performance appraisal and tracking processes, enabling efficient evaluation, tracking, and management within a single platform to support and enhance performance across the StudentxCEO East Java.
 
-=== DONE ===
-
-- modifikasi button back pada modal
-- buat "modal" pertanyaan performance tracker
-- buat tombol logout
-- modifikasi UI login biar bagus
-- nambah tulisan atau text yang belum masuk
-
-# Mau nge-running?
+## Mau nge-running?
 
 ```bash
 
@@ -22,3 +13,5 @@ npx prisma generate
 npm run dev or npm run build
 
 ```
+
+_Grow Beyond Limit 🚀_
