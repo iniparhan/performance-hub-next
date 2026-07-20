@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 
-export const APPRAISAL_POLICY_IDS = [1, 3, 5, 7, 8, 9];
+export const APPRAISAL_POLICY_IDS = [1, 3, 5, 7, 8, 9, 10];
 
 const memberSafeSelect = {
   id: true,

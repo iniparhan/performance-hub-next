@@ -18,10 +18,11 @@ export default function FeedbackGrid({ notes = [] }) {
             >
               <div className="feedback-user">
                 <div className="avatar">
-                  {(item.evaluatorName || "U").charAt(0).toUpperCase()}
+                  {/* {(item.evaluatorName || "U").charAt(0).toUpperCase()} */}
                 </div>
                 <div>
-                  <strong>{item.evaluatorName || "Anonymous"}</strong>
+                  {/* <strong>{item.evaluatorName || "Anonymous"}</strong> */}
+                  <strong>{"Anonymous"}</strong>
                   <p>
                     {item.source} • Q{item.quartal}
                   </p>
