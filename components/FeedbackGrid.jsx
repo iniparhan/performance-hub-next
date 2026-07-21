@@ -24,13 +24,15 @@ export default function FeedbackGrid({ notes = [] }) {
                   {/* <strong>{item.evaluatorName || "Anonymous"}</strong> */}
                   <strong>{"Anonymous"}</strong>
                   <p>
+                    {/* {item.source} • Q{item.quartal} */}
                     {item.source} • Q{item.quartal}
                   </p>
                 </div>
-                <span>{item.score}/5</span>
+                {/* <span>{item.score}/5</span> */}
+                <span>{" - "}</span>
               </div>
               <p>
-                <strong>{item.indicators || "Feedback"}</strong>
+                <strong>{"Feedback"}</strong>
               </p>
               <p>{item.notes}</p>
             </div>
